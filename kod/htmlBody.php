@@ -7,10 +7,7 @@ require_once 'bookingController.php';
 		}
 		
 		public function echoHTML(){
-			
-			// if(isset($_GET['lanpics'])){    
-    		        // $this->controller->presentPage();
-			// }
+	
 			
 			
 				echo "

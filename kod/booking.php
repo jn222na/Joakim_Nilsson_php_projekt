@@ -1,8 +1,10 @@
 <?php
 
-require_once 'bookingHtml.php';
+require_once 'bookingBody.php';
 require_once 'bookingController.php';
 		  $bookingCntrl = new bookingController();
-		  $bookingCntrl->checkSeat();
-	      $body = new bookingHtml();
-		  $body->bookingEcho();
+		     $bookingBodyEcho = $bookingCntrl->checkSeat();
+			 
+			 
+	     	 $body = new bookingBody();
+		 	 $body->echoBody($bookingBodyEcho);

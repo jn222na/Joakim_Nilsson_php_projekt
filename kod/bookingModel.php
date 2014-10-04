@@ -1,7 +1,19 @@
 <?php
 
+class bookingModel {
+	public function __construct() {
 
-class bookingModel{
-		
-	
+	}
+
+	public function seatStatus($förnamn, $efternamn) {
+		echo "seatstatys";
+		if ($this -> $förnamn != "" && $this -> $efternamn != "") {
+			echo "giltigt förnamnn";
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+
+	}
+
 }
