@@ -45,11 +45,25 @@ body{
 }
 .pvit{
 	color: #C7D3DC;
-	
 }
+
 .btn:hover{
 box-shadow: inset 0 0 30px 15px #49628a;
 }
+
+.colorbtnChange{
+	height:60px;
+    width:60px;
+    background: -webkit-linear-gradient(#C7D3DC,#5B798E);  
+    background: -moz-linear-gradient(#C7D3DC,#5B798E);  
+    background: -o-linear-gradient(#C7D3DC,#5B798E);  
+    background: linear-gradient(red,red);  
+	border:none;
+ 
+  	margin:5px;
+  padding: 5px;
+}
+
 #menu{
 	width:100%;
 	height:70px;

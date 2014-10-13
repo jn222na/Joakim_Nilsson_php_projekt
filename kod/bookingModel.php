@@ -5,10 +5,10 @@ class bookingModel {
 
 	}
 
-	public function seatStatus($förnamn, $efternamn) {
+	public function seatStatus($fornamn, $efternamn) {
 		echo "seatstatys";
-		if ($this -> $förnamn != "" && $this -> $efternamn != "") {
-			echo "giltigt förnamnn";
+		if ($this -> $fornamn != "" && $this -> $efternamn != "") {
+			echo "giltigt fornamnn";
 			return TRUE;
 		} else {
 			return FALSE;
