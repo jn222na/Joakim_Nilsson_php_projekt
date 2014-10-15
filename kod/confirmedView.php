@@ -8,12 +8,12 @@
 		private $msg;
 		
 		public function __construct(){
-			$this->echoConfirmedPage();
+		
 		}
 		public function echoConfirmedPage(){
+			$ret ="";
 			
-			
-	 return $ret ="
+	  $ret ="
 				<!DOCTYPE html>
 				<html>
 				<head>
@@ -57,6 +57,6 @@
 			    </div>
 				
 		  ";
-		
+		return $ret;
 	}
 	}

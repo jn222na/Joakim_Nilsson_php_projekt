@@ -1,7 +1,8 @@
 <?php
 
 
-require_once 'confirmedView.php';
+require_once 'confirmed/confirmedView.php';
+
 
 
 	class confirmedController{
@@ -9,16 +10,18 @@ require_once 'confirmedView.php';
 		private $confirmhtml;
 		
 		public function __construct(){
-			$this->confirmhtml = new confirmedPageView();
+			$this -> confirmhtml = new confirmedPageView();
 		}
 		
-		public function hej(){
-			
-			if ($this -> confirmhtml -> didUserSubmitData()) {
+		public function returnForm(){
+
+
+		if($this->confirmhtml->didUserSubmitData()){
+		
+		}
 				 // if($this->dbActions->addUser()){
-						// }
-				}
-			return $this->confirmhtml->echoConfirmedPage();
+					// }
+			return $this -> confirmhtml -> echoConfirmedPage();
 		}
 		
 	}

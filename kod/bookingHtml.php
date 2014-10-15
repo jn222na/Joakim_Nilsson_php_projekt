@@ -9,86 +9,114 @@ class bookingHtml {
 	private $button;
 	public $i;
 	private $jaKnapp;
+	private $jaKnapps;
 	private $nejKnapp;
 	private $msg;
 	private $errormsg;
 	private $fornamn;
 	private $efternamn;
 	private $usrValue;
+	private $hej;
 	public function __construct() {
 		$this -> model = new bookingModel();
 	}
 
-	public function createSeats() {
+	private function createSeats() {
 		$array = '';
 		for ($i = 1; $i <= $this -> row; $i++) {
 
-			$array .= ("<a href='/Projekt/booking.php?seat$i'  id='btn' onClick='colourGreen()'; name='submit_[$i]' class='btn' value='Seat$i'>Seat$i</a>");
+			$array .= ("<a href='/Projekt/booking.php?seat=$i'  id='btn' onClick='colourGreen()'; name='submit_[$i]' class='btn' value='Seat$i'>Seat$i</a>");
 
 			if ($i == $this -> linebreak) {
 				$array .= "<br><br><br> ";
 			}
 
 			
-		$this->getSeatClicked($i);
+		
 			
 		}
-
 		return $array;
 	}
-public function getSeatClicked($i){
-	// echo "$i";
-	 if(isset($_GET['seat'.$i])){
-	 	$this->i = $i;
-	 	echo "hej$i";
-		return true;
-		
-	}
 
+public function getSeat(){
+	if(isset($_GET['seat'])){
+		return $_GET['seat'];
+	}
 }
-	public function clickedSeat() {
 
-		
-			//TODO:Färga knappen
-			// $knapp =  $_POST['submit'][$i];
-			// $this -> i = $i;
-			$this -> msg = "<p class='pvit'>Vill du ha plats nr:$this->i?</p>";
-			$this -> jaKnapp = "<a href='?btn".$this->i."' name='jaKnapp' value='Ja'>Ja</a>";
-			$this -> nejKnapp = "<a href='/Projekt/booking.php' name='nejKnapp' value='Nej'>Nej</a>";
-		
+public function getConfirm(){
+	if(isset($_GET['confirmed'])){
+		echo "fetconfirmed";
+		return true;
 	}
-
-	public function confirmSeat() {
-		
-		if (isset($this->jaKnapp)) {
-			//TODO:byt färg på knappen och skriv ut att platsen är bokad
-			echo "satt";
-			 return true;
-		}
-		
+	else{
 		return false;
 	}
+}
 
-	public function didUserSubmitData() {
-
-		if (isset($_POST['submit_x'])) {
-			$fornamn = $_POST['fornamn'];
-			$efternamn = $_POST['efternamn'];
-
-			if ($fornamn == "") {
-				$this -> usrValue = $fornamn;
-				$this -> errormsg = "<p class='pvit'>Förnamn är tomt.</p>";
-				return FALSE;
-			} else if (efternamn == "") {
-				$this -> errormsg = "<p class='pvit'>Efternamn är tomt.</p>";
-				$this -> usrValue = $fornamn;
-				return FALSE;
-			}
-
-			return TRUE;
-		}
-
+	public function clickedSeat($i) {
+			//TODO:Färga knappen
+			$this -> msg = "<p class='pvit'>Vill du ha plats nr:$i?</p>";
+			$this -> nejKnapp = "<a href='/Projekt/booking.php' name='nejKnapp' value='Nej'>Nej</a>";
 	}
+
+	public function confirmSeat($i) {
+			//TODO:byt färg på knappen och skriv ut att platsen är bokad
+			$this -> jaKnapp = "<a href='/Projekt/booking.php?confirmed=".$i."' name='jaKnapp' value='Ja'>Ja</a>";
+			 return true;
+	}
+	
+	
+	
+	public function echoForm(){
+		  $this-> hej ="
+				<!DOCTYPE html>
+				<html>
+				<head>
+				<link rel='stylesheet' type='text/css' href='mystyle.css'>
+					<meta charset=UTF-8>
+					<title>Lanster</title>
+				</head>
+				<body>
+				<img src='bilder/2.png' name='BG' width='1680' height='1080' id='BG'>
+				
+				
+				</body>
+				</html>
+				<div id='mainsection'>
+				<div id='header'>
+				<img src='bilder/header.png'>
+				</div>
+				<div id ='menu'>
+							<a img href='index.php'><img src='bilder/hem.png'/></a>
+							<a img href='?lanpics'><img src='bilder/lanpics.png'/></a>
+							<a img href='booking.php'><img src='bilder/bokning.png'/></a>
+							<a img href='?om_oss'><img src='bilder/om_oss.png'/></a>
+							<a img href='?kontakt'><img src='bilder/kontakt.png'/></a>
+				</div>
+						<div id='container'>
+						
+		 <form id='loginn' class='pvit'  method='post'>
+    		<label for='förnamn'>Förnamn:</label>
+    			<br>
+    		<input type='text'  name='förnamn' value='$this->usrValue' id='förnamn'>
+    			<br>
+    		<label for='efternamn'>Efternamn:</label>
+    			<br>
+    		<input type='efternamn'   name='efternamn' id='efternamn'>
+    			<br>
+    		<input type='submit' name='submitInfo'  value='Submit'/>
+	    </form>
+	    $this->errormsg
+	    $this->msg
+					 </div>	
+			    </div>
+				
+		  ";
+		  var_dump($this->hej);
+	}
+
+	
 
 	//Get funktioner
 	public function getfornamn() {
@@ -105,6 +133,7 @@ public function getSeatClicked($i){
 
 	public function bookingEcho($msg) {
 		$ret = "";
+		
 		$array = $this -> createSeats();
 	
 	
@@ -126,6 +155,7 @@ public function getSeatClicked($i){
 							$this->msg
 							$this->jaKnapp
 							$this->nejKnapp
+							$this->hej
 							$msg
 							$this->errormsg
 						</form> 
