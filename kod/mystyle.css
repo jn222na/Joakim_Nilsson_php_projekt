@@ -28,10 +28,8 @@ body{
     background-image: url(bilder/containerkant.png);
 }
 
-.btn{
+.btnEnabled{
     /*background:url(bilder/availableseat.png) no-repeat;*/
-    
-    
     height:60px;
     width:60px;
     background: -webkit-linear-gradient(#C7D3DC,#5B798E);  
@@ -39,13 +37,68 @@ body{
     background: -o-linear-gradient(#C7D3DC,#5B798E);  
     background: linear-gradient(#C7D3DC,#5B798E);  
 	border:none;
+  	margin:5px;
+    padding: 5px;
+
+}
+.btnDisabled {
+    height:60px;
+    width:60px;
+    background: -webkit-linear-gradient(gray,gray);   
+    background: -moz-linear-gradient(gray,gray);  
+    background: -o-linear-gradient(gray,gray);   
+    background: linear-gradient(gray,gray);  
+	border:none;
  
   	margin:5px;
   padding: 5px;
+   pointer-events: none;
+   cursor: default;
+}
+.btnDisabled:link {
+    color: black;
+    text-decoration: none;
+}
 
+/* visited link */
+.btnDisabled:visited {
+    color: black;
+    text-decoration: none;
+}
+.btnEnabled:link {
+    color: black;
+    text-decoration: none;
+}
+
+/* visited link */
+.btnEnabled:visited {
+    color: black;
+    text-decoration: none;
 }
 .pvit{
 	color: #C7D3DC;
+    
+}
+.errorMsg{
+	color: #C7D3DC;
+	padding: 0;
+	margin: 0;
+}
+.confStyle:visited {
+    color: black;
+    text-decoration: none;
+}
+.confStyle:link {
+
+background: -webkit-linear-gradient(#C7D3DC,#5B798E);  
+    background: -moz-linear-gradient(#C7D3DC,#5B798E);  
+    background: -o-linear-gradient(#C7D3DC,#5B798E);  
+    background: linear-gradient(#C7D3DC,#5B798E);  
+	border-width:25px;
+  	margin:6px;
+    padding: 6px;
+    color: black;
+    text-decoration: none;
 }
 .form{
 	color: #C7D3DC;
@@ -59,8 +112,7 @@ body{
 } 
 .inputStyle{
 	 border: 1px solid #c4c4c4; 
-    height: 25px; 
-    width: 100px; 
+    width: 135px; 
     font-size: 13px; 
     padding: 4px 4px 4px 4px; 
     -moz-border-radius: 4px; 
@@ -78,7 +130,7 @@ body{
 } 
 
 
-.btn:hover{
+.btnEnabled:hover{
 box-shadow: inset 0 0 30px 15px #49628a;
 }
 
@@ -95,17 +147,10 @@ box-shadow: inset 0 0 30px 15px #49628a;
    }
 
 .colorbtnChange{
-	height:60px;
-    width:60px;
-    background: -webkit-linear-gradient(#C7D3DC,#5B798E);  
-    background: -moz-linear-gradient(#C7D3DC,#5B798E);  
-    background: -o-linear-gradient(#C7D3DC,#5B798E);  
-    background: linear-gradient(red,red);  
-	border:none;
- 
-  	margin:5px;
-  padding: 5px;
+    color:red;
 }
+
+
 
 #menu{
 	width:100%;

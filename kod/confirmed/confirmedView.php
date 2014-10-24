@@ -3,19 +3,19 @@
 class confirmedPageView {
 	private $firstnameValue;
 	private $lastnameValue;
-	private $a;
 	private $errormsg;
-	private $msg;
 	private $seatNumber;
+	private $regexCardnumber = '/^([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{2,4})$/';
+	private $regexMonth = '/^1[0-2]|0[1-9]/';
+	private $regexYear = '/^(2014)|(20[1-4][0-9])$/';
+	private $regexCvc = '/^([0-9]{3})$/';
 	public function __construct() {
 	}
 
 	public function getFirstname() {
 		if (isset($_POST['firstname'])) {
-			echo "isset";
 			return $_POST['firstname'];
 		} else {
-			echo "issetnot";
 		}
 	}
 
@@ -54,60 +54,92 @@ public function didUserSubmitData() {
 		$month = $this->getExpirationMonth();
 		$year = $this->getExpirationYear();
 		$this -> seatNumber = $this -> getConfirmed();
-		var_dump($fornamn);
 		if (isset($_POST['submitInfo'])) {
 
 			if ($fornamn == "") {
 				$this -> firstnameValue = $fornamn;
-				$this -> errormsg = "<p class='pvit'>Förnamn är tomt.</p>";
+				$this -> errormsg = "<p class='errorMsg'>Förnamn är tomt.</p>";
 				return FALSE;
-			} else if ($efternamn == "") {
-				$this -> errormsg = "<p class='pvit'>Efternamn är tomt.</p>";
+			}
+			//Använder strcspn då det är snabbare än regex.
+			else if (strcspn($fornamn, '0123456789') != strlen($fornamn)){
+				$this -> firstnameValue = $fornamn;
+				$this -> errormsg = "<p class='errorMsg'>Förnamnet innehåller siffror.</p>";
+				return FALSE;
+			}
+			else if (strlen($fornamn) < 3 || strlen($fornamn) > 15) {
+			    $this -> errormsg = "<p class='errorMsg'>Förnamnet måste innehålla fler än 3 bokstäver och mindre än 15.</p>";
+				$this -> firstnameValue = $fornamn;
+				$this -> usrLastnameValue = $efternamn;
+					return FALSE;
+			}
+			else if ($efternamn == "") {
+				$this -> errormsg = "<p class='errorMsg'>Efternamn är tomt.</p>";
 				$this -> firstnameValue = $fornamn;
 				$this -> usrLastnameValue = $efternamn;
 				return FALSE;
 			}
-			else if($kortNr == ""){
-				$this -> errormsg = "<p class='pvit'>Kortnummer är tomt.</p>";
+			else if (strcspn($efternamn, '0123456789') != strlen($efternamn)){
+				$this -> firstnameValue = $fornamn;
+				$this -> usrLastnameValue = $efternamn;
+				$this -> errormsg = "<p class='errorMsg'>Efternamnet innehåller siffror.</p>";
+				return FALSE;
+			}
+			else if (strlen($efternamn) < 3 || strlen($efternamn) > 15) {
+			    $this -> errormsg = "<p class='errorMsg'>Efternamnet måste innehålla fler än 3 bokstäver och mindre än 15.</p>";
+				$this -> firstnameValue = $fornamn;
+				$this -> usrLastnameValue = $efternamn;
+					return FALSE;
+			}
+		   	else if($_POST['paymentComp'] ==""){
+			    $this -> errormsg = "<p class='errorMsg'>Måste välja tillverkare.</p>";
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				return FALSE;
 			}
-			else if($cvc == ""){
+			else if(!preg_match($this->regexCardnumber, $kortNr)){
+				$this -> errormsg = "<p class='errorMsg'>Kortnummer är tomt/innehåller andra tecken än siffror.</p>";
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
-				$this -> errormsg = "<p class='pvit'>Cvc nummer är tomt.</p>";
+				return FALSE;
+			}
+			else if(!preg_match($this->regexCvc, $cvc)){
+				$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> errormsg = "<p class='errorMsg'>Cvc nummer är tomt/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 				
 			}
-			else if($month == ""){
+			else if(!preg_match($this->regexMonth, $month)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
-				$this -> errormsg = "<p class='pvit'>Månad måste fyllas i.</p>";
+				$this -> errormsg = "<p class='errorMsg'>Månad måste fyllas i(Format ex. 01-09 10-12)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
-			else if(!isset($_POST['paymentComp'])){
-			  $this -> errormsg = "<p class='pvit'>Måste välja brand.</p>";
-			}
-			else if($year == ""){
+			else if(!preg_match($this->regexYear, $year)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
-				$this -> errormsg = "<p class='pvit'>År måste fyllas i.</p>";
+				$this -> errormsg = "<p class='errorMsg'>År måste fyllas i (Format ex. 2014)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
-			
-			
 			return TRUE;
 		}
 	}
-	
+	public function checkExistingMember(){
+	    if($this->getFirstname() != "" && $this->getLastname() != "" && $this->getCardNumber() != ""   && $this->getCvc() != "" && $this->getExpirationMonth() && $this->getExpirationYear()){
+        return $this -> errormsg = "Platsen är redan upptagen var vänliga välj en annan.";
+	    }
+	   }
 
 	public function getConfirmed() {
 		if (isset($_GET['confirmed'])) {
 			return $_GET['confirmed'];
 		}
 	}
-
+		public function setNewUsernameCookie(){
+            setcookie('cookieNewUsername',$this->seatNumber, time() + 60 * 60 * 24 * 30);
+            return true;
+        }
 	public function echoConfirmedPage() {
 
 		$ret = "
@@ -138,7 +170,9 @@ public function didUserSubmitData() {
 					<div id='container'>
 					<h3 class='pvit'>Du har valt plats nummer: $this->seatNumber
 					<br>
-					Fyll i formuläret annars jävlar.</h3>
+					Fyll i formuläret för att betala för din plats.
+	                 $this->errormsg
+	    </h3>
 					
 	<div id='form' class='form'>				
 		 <form id='login' class='formAlign'  method='post'>
@@ -150,40 +184,36 @@ public function didUserSubmitData() {
     			<br>
     		<input type='text'  class='inputStyle' value='$this->lastnameValue' name='lastname' id='lastname'>
     			<br>
-   	<label>Brand</label>
+   	<label>Tillverkare</label>
    	<br>
    	<div id='select' class='styledSelect'>
     	<select name='paymentComp'>
 		  <option value=''>Select...</option>
-		  <option name='visa' value='Visa'>Visa</option>
-		  <option name='mastercard' value='Mastercard'>Mastercard</option>
+		  <option value='1'>Visa</option>
+		  <option  value='2'>Mastercard</option>
 		</select>
 	</div>
 		
     		
-		<label>Card Number</label>
+		<label>Kort Nummer</label>
 			<br>
-    	<input type='text' name='cardNumber' class='inputStyle' size='20' autocomplete='off'>
- 			<br>
-		<span>Enter the number without spaces or hyphens.</span>	
+    	<input type='text' name='cardNumber' class='inputStyle' maxlength='19' autocomplete='off'>
 			<br>		
 		<label class='form'>CVC</label>
 			<br>
-		<input type='text' name='cvc' class='inputStyle' size='4' autocomplete='off'>
+		<input type='text' name='cvc' class='inputStyle' maxlength='3'  autocomplete='off'>
 			<br>
-		<label>Expiration (MM/YYYY)</label>
+		<label>Utgångsdatum (MM/YYYY)</label>
 			<br>
-		<input type='text' name='expirationMonth' class='inputStyle' size='2'>
+		<input type='text' name='expirationMonth' class='inputStyle' maxlength='2'>
 			<span> / </span>
-		<input type='text'  class='inputStyle' size='4'>	
+		<input type='text' name='expirationYear' class='inputStyle' maxlength='4'>	
 			<br>
-		<input type='submit' name='submitInfo'  value='Submit'/>
+		<input type='submit' name='submitInfo'  value='Köp'/>
 			
-			
+
 	    </form>
-	    $this->errormsg
-	    $this->msg
-	   
+	
 	    </div>
 					 </div>	
 			    </div>
