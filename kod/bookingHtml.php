@@ -74,7 +74,6 @@ public function getConfirm(){
         $message = 'Hej du har bokat plats '.$addSeatToUrl ."<br>".
          'Vill du avboka platsen klicka på följande länk' . "<br>".
          'http://www.jockepocke.se/Lanster/booking.php?delete='.$deleteHash.$addSeatToUrl.'';
-
         $headers = 'From: lanster@jockepocke.se' . "\r\n";
     	$headers .= "MIME-Version: 1.0" . "\r\n";
 		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";

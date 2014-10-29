@@ -236,7 +236,7 @@ public function didUserSubmitData() {
     		
 		<label>Kort Nummer</label>
 			<br>
-    	<input type='text' name='cardNumber' class='inputStyle' maxlength='19' autocomplete='off'>
+    	<input type='text' name='cardNumber' class='inputStyle' maxlength='16' autocomplete='off'>
 			<br>		
 		<label class='form'>CVC</label>
 			<br>
