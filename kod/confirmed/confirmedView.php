@@ -4,8 +4,11 @@ class confirmedPageView {
 	private $firstnameValue;
 	private $lastnameValue;
 	private $emailValue;
+	private $cvcValue;
+	private $monthValue;
 	private $errormsg;
 	private $seatNumber;
+	
 	private $uniqueKey;
 	private $regexCardnumber = '/^([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{2,4})$/';
 	private $regexMonth = '/^1[0-2]|0[1-9]/';
@@ -101,27 +104,43 @@ public function didUserSubmitData() {
 			}
 			else if (strlen($efternamn) < 3 || strlen($efternamn) > 15) {
 			    $this -> errormsg = "<p class='errorMsg'>Efternamnet måste innehålla fler än 3 bokstäver och mindre än 15.</p>";
-				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+					$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 					return FALSE;
 			}
 		    else if ($email == ""){
-				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+					$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 				$this -> errormsg = "<p class='errorMsg'>Email får inte vara tomt.</p>";
 				return FALSE;
 			}
 			else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+					$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 				$this -> errormsg = "<p class='errorMsg'>Ogiltigt email format.</p>";
 				return FALSE;
 			}
 		   	else if($_POST['paymentComp'] ==""){
 			    $this -> errormsg = "<p class='errorMsg'>Måste välja tillverkare.</p>";
-				$this -> firstnameValue = $fornamn;
+					$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				
 				return FALSE;
 			}
 			else if(!preg_match($this->regexCardnumber, $kortNr)){
@@ -129,20 +148,32 @@ public function didUserSubmitData() {
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 				return FALSE;
 			}
+			
 			else if(!preg_match($this->regexCvc, $cvc)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 				$this -> errormsg = "<p class='errorMsg'>Cvc nummer är tomt/innehåller andra tecken än siffror, måste vara tre tecken.</p>";
 				return FALSE;
 				
 			}
+
 			else if(!preg_match($this->regexMonth, $month)){
-				$this -> firstnameValue = $fornamn;
+					$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+			$this->cvcValue = $cvc;
 				$this -> errormsg = "<p class='errorMsg'>Månad måste fyllas i(Format ex. 01-09 10-12)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
@@ -150,6 +181,9 @@ public function didUserSubmitData() {
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
 				$this -> errormsg = "<p class='errorMsg'>År måste fyllas i (Format ex. 2014)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
@@ -233,18 +267,18 @@ public function didUserSubmitData() {
 		</select>
 	</div>
 		
-    		
+    	
 		<label>Kort Nummer</label>
 			<br>
-    	<input type='text' name='cardNumber' class='inputStyle' maxlength='16' autocomplete='off'>
+    	<input type='text' name='cardNumber' class='inputStyle' maxlength='16' autocomplete='off' value='$this->kortnrValue'>
 			<br>		
 		<label class='form'>CVC</label>
 			<br>
-		<input type='text' name='cvc' class='inputStyle' maxlength='3'  autocomplete='off'>
+		<input type='text' name='cvc' class='inputStyle' maxlength='3' value='$this->cvcValue'  autocomplete='off'>
 			<br>
 		<label>Utgångsdatum (MM/YYYY)</label>
 			<br>
-		<input type='text' name='expirationMonth' class='inputStyle' maxlength='2'>
+		<input type='text' name='expirationMonth' value='$this->monthValue' class='inputStyle' maxlength='2'>
 			<span> / </span>
 		<input type='text' name='expirationYear' class='inputStyle' maxlength='4'>	
 			<br>
