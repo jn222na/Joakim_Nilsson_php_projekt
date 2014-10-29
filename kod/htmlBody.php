@@ -33,7 +33,7 @@ require_once 'bookingController.php';
 							<a img href='?kontakt'><img src='bilder/kontakt.png'/></a>
 						</div>
 					 <div id='container'>
-						<iframe width='725' height='408' src='http://www.youtube.com/embed/tPalCVAGW4o?feature=player_detailpage' frameborder='0' allowfullscreen></iframe>
+						<iframe width='725' height='408' src='//www.youtube.com/embed/JVxe5NIABsI?list=RD0W1ULoLs6Cg' frameborder='0' allowfullscreen></iframe>
 					 </div>	
 					</div>
 					

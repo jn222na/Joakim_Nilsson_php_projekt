@@ -13,17 +13,19 @@ require_once 'database/Repository.php';
 			$this -> confirmhtml = new confirmedPageView();
 			$this-> dbActions = new Repository();
 		}
-
+    //Returnerar betalningsformuläret.
 		public function returnForm(){
- 
+        
         $fornamn = $this -> confirmhtml -> getFirstname();
 		$efternamn = $this -> confirmhtml -> getLastname();
 		$seatNr = $this -> confirmhtml -> getConfirmed();
+		$unik = $this -> confirmhtml -> getUnique();
 		
 		if($this->confirmhtml->didUserSubmitData()){
-		    $this->confirmhtml->setNewUsernameCookie();
-		  if($this->dbActions->addPayment($fornamn,$efternamn,$seatNr)){
-		      header("Location: booking.php");
+	       $this->confirmhtml->storeCookies();
+    //skickar med information till databaslagret
+		  if($this->dbActions->addPayment($fornamn,$efternamn,$seatNr,$unik)){
+		      $this->confirmhtml->relocateToBooking();
 		 }
 		 else{
 		     $this->confirmhtml->checkExistingMember();
@@ -32,7 +34,7 @@ require_once 'database/Repository.php';
 		 
 		}
 				
-			return $this -> confirmhtml -> echoConfirmedPage($exists);
+			return $this -> confirmhtml -> echoConfirmedPage();
 		}
 		
 	}

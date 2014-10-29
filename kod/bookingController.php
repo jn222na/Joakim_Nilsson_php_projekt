@@ -15,20 +15,26 @@ class bookingController {
 	}
 
 	public function checkSeat() {
-	    
-		
-		$msg = "";
-			
-		    $this->bookinghtml->echoBookedSeat();
+	    //Kollar om användaren har valt att avboka.
+		  $this->bookinghtml->checkDelete();
+		//Kollar om användaren har bokat en plats har han det skriv ut att platsen blivit bokad.	
+	    if($this->bookinghtml->echoBookedSeat()){
+	        $this->bookinghtml->sendMail();
+	    }
+	    //Hämtar platsen som användaren klickat på
 		if ($this -> bookinghtml -> getSeat()) {
+		//Skickar in vald plats och presenterar alternativ för användaren
                 $this -> bookinghtml -> clickedSeat($this -> bookinghtml -> getSeat());
 					if($this->bookinghtml->confirmSeat($this -> bookinghtml -> getSeat())){
 				}			
 		}
+		//Om användaren väljer ja byt kontroller och visa betalningsformulär
 		if($this->bookinghtml->getConfirm()){
+		    $this->bookinghtml->setEmailCookie();
 			return $this->confView->returnForm();
 		}	
-		return $this -> bookinghtml -> bookingEcho($msg);
+		 $this->bookinghtml->removeEmailCookie();
+		return $this -> bookinghtml -> bookingEcho();
 	}
 
 }

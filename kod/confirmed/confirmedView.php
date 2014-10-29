@@ -3,13 +3,16 @@
 class confirmedPageView {
 	private $firstnameValue;
 	private $lastnameValue;
+	private $emailValue;
 	private $errormsg;
 	private $seatNumber;
+	private $uniqueKey;
 	private $regexCardnumber = '/^([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{2,4})$/';
 	private $regexMonth = '/^1[0-2]|0[1-9]/';
 	private $regexYear = '/^(2014)|(20[1-4][0-9])$/';
 	private $regexCvc = '/^([0-9]{3})$/';
 	public function __construct() {
+	   
 	}
 
 	public function getFirstname() {
@@ -45,10 +48,21 @@ class confirmedPageView {
 			return $_POST['expirationYear'];
 		}
 	}
+	public function getEmail(){
+	    if(isset($_POST['email'])){
+	        return $_POST['email'];
+	    }
+	}
+	public function getUnique(){
+	        $this->uniqueKey = md5($this->getConfirmed());
+	        $this->uniqueKey.= $this -> getConfirmed();
+	        return $this->uniqueKey;
+	}
 	
 public function didUserSubmitData() {
 		$fornamn = $this -> getFirstname();
 		$efternamn = $this -> getLastname();
+		$email = $this->getEmail();
 		$kortNr = $this->getCardNumber();
 		$cvc = $this->getCvc();
 		$month = $this->getExpirationMonth();
@@ -64,7 +78,7 @@ public function didUserSubmitData() {
 			//Använder strcspn då det är snabbare än regex.
 			else if (strcspn($fornamn, '0123456789') != strlen($fornamn)){
 				$this -> firstnameValue = $fornamn;
-				$this -> errormsg = "<p class='errorMsg'>Förnamnet innehåller siffror.</p>";
+				$this -> errormsg = "<p class='errorMsg'>Förnamnet får inte innehålla siffror.</p>";
 				return FALSE;
 			}
 			else if (strlen($fornamn) < 3 || strlen($fornamn) > 15) {
@@ -91,34 +105,51 @@ public function didUserSubmitData() {
 				$this -> usrLastnameValue = $efternamn;
 					return FALSE;
 			}
+		    else if ($email == ""){
+				$this -> firstnameValue = $fornamn;
+				$this -> usrLastnameValue = $efternamn;
+				$this -> errormsg = "<p class='errorMsg'>Email får inte vara tomt.</p>";
+				return FALSE;
+			}
+			else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+				$this -> firstnameValue = $fornamn;
+				$this -> usrLastnameValue = $efternamn;
+				$this -> errormsg = "<p class='errorMsg'>Ogiltigt email format.</p>";
+				return FALSE;
+			}
 		   	else if($_POST['paymentComp'] ==""){
 			    $this -> errormsg = "<p class='errorMsg'>Måste välja tillverkare.</p>";
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
 				return FALSE;
 			}
 			else if(!preg_match($this->regexCardnumber, $kortNr)){
 				$this -> errormsg = "<p class='errorMsg'>Kortnummer är tomt/innehåller andra tecken än siffror.</p>";
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
 				return FALSE;
 			}
 			else if(!preg_match($this->regexCvc, $cvc)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
-				$this -> errormsg = "<p class='errorMsg'>Cvc nummer är tomt/innehåller andra tecken än siffror.</p>";
+				$this -> emailValue = $email;
+				$this -> errormsg = "<p class='errorMsg'>Cvc nummer är tomt/innehåller andra tecken än siffror, måste vara tre tecken.</p>";
 				return FALSE;
 				
 			}
 			else if(!preg_match($this->regexMonth, $month)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
 				$this -> errormsg = "<p class='errorMsg'>Månad måste fyllas i(Format ex. 01-09 10-12)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
 			else if(!preg_match($this->regexYear, $year)){
 				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
 				$this -> errormsg = "<p class='errorMsg'>År måste fyllas i (Format ex. 2014)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
@@ -136,9 +167,13 @@ public function didUserSubmitData() {
 			return $_GET['confirmed'];
 		}
 	}
-		public function setNewUsernameCookie(){
-            setcookie('cookieNewUsername',$this->seatNumber, time() + 60 * 60 * 24 * 30);
+		public function storeCookies(){
+            setcookie('storedSeatNumber',$this->seatNumber, time() + 60 * 60 * 24 * 30);
+            setcookie('storedEmail',$this->getEmail(), time() + 60 * 60 * 24 * 30);
             return true;
+        }
+        public function relocateToBooking(){
+            header("Location: booking.php");
         }
 	public function echoConfirmedPage() {
 
@@ -183,6 +218,10 @@ public function didUserSubmitData() {
     		<label for='efternamn'>Efternamn:</label>
     			<br>
     		<input type='text'  class='inputStyle' value='$this->lastnameValue' name='lastname' id='lastname'>
+    			<br>
+    		<label for='email'>Email:</label>
+    			<br>
+    		<input type='text'  class='inputStyle' value='$this->emailValue' name='email' id='email'>
     			<br>
    	<label>Tillverkare</label>
    	<br>

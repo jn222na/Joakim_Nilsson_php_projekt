@@ -6,7 +6,9 @@ require_once 'databaseConnectionSettings.php';
 	 private  $rowFirstname = "firstname";
  	 private  $rowLastname =  "lastname";
 	 private  $rowSeat =  "seat";
+	 private  $rowUnique ="unik";
 	 private  $dbTable = "payedCustomer";
+	 private  $dbConnection;
 	 public function connection() {
 		if ($this -> dbConnection == NULL) {
 			$this -> dbConnection = new \PDO(\settings::$DB_CONNECTION, \settings::$DB_USERNAME, \settings::$DB_PASSWORD);
@@ -14,16 +16,12 @@ require_once 'databaseConnectionSettings.php';
 		}
 	}
 	 
-	public function addPayment($firstname,$lastname,$seat) {
-// 		$firstname = $_POST['firstname'];
-// 		$lastname = $_POST['lastname'];
-// 		$seat = $_GET['confirmed'];
+	public function addPayment($firstname,$lastname,$seat,$unique) {
+        //Lägger in för/efternamn i databasen samt sätesplatsen som personen valt.
 		try{
     		$this -> connection();
-    		$sql = "INSERT INTO ".$this->dbTable."(" . $this->rowFirstname . ", " . $this->rowLastname . ", " . $this->rowSeat . ")
-    		VALUES (?, ?, ?)";
-    		
-	    //Kollar om platsen är upptagen
+    		$sql = "INSERT INTO ".$this->dbTable."(" . $this->rowFirstname . ", " . $this->rowLastname . ", " . $this->rowSeat . ", " . $this->rowUnique . ") VALUES (?,?,?,?)";
+	    //Dubbel kollar om platsen redan är upptagen.
         	$sqlDuplicate = "SELECT * FROM ".$this->dbTable." WHERE " . $this->rowSeat . " = ?";
 
 			$paramsDuplicate = array($seat);
@@ -38,7 +36,7 @@ require_once 'databaseConnectionSettings.php';
 				return false;
 			}
 			else{
-    			$params = array($firstname, $lastname, $seat);
+    			$params = array($firstname, $lastname, $seat,$unique);
     			$query = $this -> dbConnection -> prepare($sql);
     			$query -> execute($params);
     			return true;
@@ -50,7 +48,7 @@ require_once 'databaseConnectionSettings.php';
 	}
 	
 		public function fetchCredentials($seatNr){
-		    
+		    //Kollar om någon plats matchar med någon i databasen.
 		    $this->connection();
 		   	$sqlDuplicate = "SELECT * FROM ".$this->dbTable." WHERE " . $this->rowSeat . " = ?";
             
@@ -68,6 +66,20 @@ require_once 'databaseConnectionSettings.php';
 			    return true;
 			}
             }
+		
+            }
+            public function removeBooking($deleteSeat){
+		    //Kollar om någon plats matchar med någon i databasen.
+		    $this->connection();
+		   	$sqlDuplicate = "DELETE FROM ".$this->dbTable." WHERE  " . $this->rowSeat . " = ?";
+                		   	
+            var_dump($deleteSeat);
+			$paramsDuplicate = array($deleteSeat);
+            
+			$queryDuplicate = $this->dbConnection->prepare($sqlDuplicate);
+
+			$queryDuplicate->execute($paramsDuplicate);
+// 		
 		
             }
 	
