@@ -2,8 +2,7 @@
 
 
 require_once 'confirmed/confirmedView.php';
-require_once 'database/Repository.php';
-
+error_reporting(E_ALL);
 
 	class confirmedController{
 		
@@ -20,11 +19,14 @@ require_once 'database/Repository.php';
 		$efternamn = $this -> confirmhtml -> getLastname();
 		$seatNr = $this -> confirmhtml -> getConfirmed();
 		$unik = $this -> confirmhtml -> getUnique();
+		$mail = $this -> confirmhtml -> getEmail();
 		
 		if($this->confirmhtml->didUserSubmitData()){
 	       $this->confirmhtml->storeCookies();
     //skickar med information till databaslagret
-		  if($this->dbActions->addPayment($fornamn,$efternamn,$seatNr,$unik)){
+    
+    
+		  if($this->dbActions->addPayment($fornamn,$efternamn,$seatNr,$unik,$mail)){
 		      $this->confirmhtml->relocateToBooking();
 		 }
 		 else{

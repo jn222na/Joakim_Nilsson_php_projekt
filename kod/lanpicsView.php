@@ -8,7 +8,7 @@ require_once 'bookingModel.php';
 			$this->model = new bookingModel();
 		}
 		
-		//<input type='submit' value='seat $i'  name='seat $i'/>
+		
 		
 			
 		}

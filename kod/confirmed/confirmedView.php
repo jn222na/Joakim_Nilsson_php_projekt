@@ -1,14 +1,15 @@
 <?php
-
+error_reporting(E_ALL);
 class confirmedPageView {
 	private $firstnameValue;
 	private $lastnameValue;
 	private $emailValue;
 	private $cvcValue;
 	private $monthValue;
+	private $yearValue;
 	private $errormsg;
 	private $seatNumber;
-	
+	private $kortnrValue;
 	private $uniqueKey;
 	private $regexCardnumber = '/^([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{4})[-|s]*([0-9]{2,4})$/';
 	private $regexMonth = '/^1[0-2]|0[1-9]/';
@@ -20,13 +21,14 @@ class confirmedPageView {
 
 	public function getFirstname() {
 		if (isset($_POST['firstname'])) {
+		$_POST['firstname'] = ucfirst($_POST['firstname']);
 			return $_POST['firstname'];
-		} else {
-		}
+		} 
 	}
 
 	public function getLastname() {
 		if (isset($_POST['lastname'])) {
+		    $_POST['lastname'] = ucfirst($_POST['lastname']);
 			return $_POST['lastname'];
 		}
 	}
@@ -75,55 +77,84 @@ public function didUserSubmitData() {
 
 			if ($fornamn == "") {
 				$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Förnamn är tomt.</p>";
 				return FALSE;
 			}
 			//Använder strcspn då det är snabbare än regex.
 			else if (strcspn($fornamn, '0123456789') != strlen($fornamn)){
 				$this -> firstnameValue = $fornamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Förnamnet får inte innehålla siffror.</p>";
 				return FALSE;
 			}
 			else if (strlen($fornamn) < 3 || strlen($fornamn) > 15) {
 			    $this -> errormsg = "<p class='errorMsg'>Förnamnet måste innehålla fler än 3 bokstäver och mindre än 15.</p>";
 				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				$this->yearValue = $year;
 					return FALSE;
 			}
 			else if ($efternamn == "") {
 				$this -> errormsg = "<p class='errorMsg'>Efternamn är tomt.</p>";
 				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				$this->yearValue = $year;
 				return FALSE;
 			}
 			else if (strcspn($efternamn, '0123456789') != strlen($efternamn)){
 				$this -> firstnameValue = $fornamn;
-				$this -> usrLastnameValue = $efternamn;
+				$this -> lastnameValue = $efternamn;
+				$this -> emailValue = $email;
+				$this->cvcValue = $cvc;
+				$this -> kortnrValue= $kortNr;
+				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Efternamnet innehåller siffror.</p>";
 				return FALSE;
 			}
 			else if (strlen($efternamn) < 3 || strlen($efternamn) > 15) {
 			    $this -> errormsg = "<p class='errorMsg'>Efternamnet måste innehålla fler än 3 bokstäver och mindre än 15.</p>";
-					$this -> firstnameValue = $fornamn;
+				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
+				$this->yearValue = $year;
 					return FALSE;
 			}
 		    else if ($email == ""){
-					$this -> firstnameValue = $fornamn;
+				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Email får inte vara tomt.</p>";
 				return FALSE;
 			}
 			else if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-					$this -> firstnameValue = $fornamn;
+				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
 				$this->cvcValue = $cvc;
@@ -134,13 +165,13 @@ public function didUserSubmitData() {
 			}
 		   	else if($_POST['paymentComp'] ==""){
 			    $this -> errormsg = "<p class='errorMsg'>Måste välja tillverkare.</p>";
-					$this -> firstnameValue = $fornamn;
+				$this -> firstnameValue = $fornamn;
 				$this -> lastnameValue = $efternamn;
 				$this -> emailValue = $email;
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
-				
+				$this->yearValue = $year;
 				return FALSE;
 			}
 			else if(!preg_match($this->regexCardnumber, $kortNr)){
@@ -151,6 +182,7 @@ public function didUserSubmitData() {
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
+				$this->yearValue = $year;
 				return FALSE;
 			}
 			
@@ -161,6 +193,7 @@ public function didUserSubmitData() {
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Cvc nummer är tomt/innehåller andra tecken än siffror, måste vara tre tecken.</p>";
 				return FALSE;
 				
@@ -173,7 +206,8 @@ public function didUserSubmitData() {
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
-			$this->cvcValue = $cvc;
+			    $this->cvcValue = $cvc;
+			    $this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>Månad måste fyllas i(Format ex. 01-09 10-12)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
@@ -184,6 +218,7 @@ public function didUserSubmitData() {
 				$this->cvcValue = $cvc;
 				$this -> kortnrValue= $kortNr;
 				$this->monthValue = $month;
+				$this->yearValue = $year;
 				$this -> errormsg = "<p class='errorMsg'>År måste fyllas i (Format ex. 2014)/innehåller andra tecken än siffror.</p>";
 				return FALSE;
 			}
@@ -202,8 +237,10 @@ public function didUserSubmitData() {
 		}
 	}
 		public function storeCookies(){
-            setcookie('storedSeatNumber',$this->seatNumber, time() + 60 * 60 * 24 * 30);
+            setcookie('storedSeatNumber',$this->getConfirmed(), time() + 60 * 60 * 24 * 30);
             setcookie('storedEmail',$this->getEmail(), time() + 60 * 60 * 24 * 30);
+            setcookie('storedFirstname',$this->getFirstname(), time() + 60 * 60 * 24 * 30);
+            setcookie('storedLastname',$this->getLastname(), time() + 60 * 60 * 24 * 30);
             return true;
         }
         public function relocateToBooking(){
@@ -280,7 +317,7 @@ public function didUserSubmitData() {
 			<br>
 		<input type='text' name='expirationMonth' value='$this->monthValue' class='inputStyle' maxlength='2'>
 			<span> / </span>
-		<input type='text' name='expirationYear' class='inputStyle' maxlength='4'>	
+		<input type='text' name='expirationYear' value='$this->yearValue' class='inputStyle' maxlength='4'>	
 			<br>
 		<input type='submit' name='submitInfo'  value='Köp'/>
 			
